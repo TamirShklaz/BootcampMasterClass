@@ -10,3 +10,39 @@ th, td {
 th {
     text-align: left;
 }
+
+.rect {
+    stroke: black;
+    stroke-width: 1px;
+    stroke-linejoin: round;
+    fill: white;
+}
+
+.highlighted-rect {
+    stroke: green;
+    stroke-width: 4px;
+    stroke-linejoin: round;
+    fill: green;
+    fill-opacity: 0.2;
+
+}
+
+.node circle {
+    fill: #fff;
+    stroke: steelblue;
+    stroke-width: 3px;
+}
+
+.node text {
+    font: 12px sans-serif;
+}
+
+.link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 2px;
+}
+
+.pattern {
+}
+
