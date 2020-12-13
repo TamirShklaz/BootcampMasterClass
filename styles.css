@@ -1,0 +1,12 @@
+tr, td {
+    border: 1px solid black;
+}
+
+th, td {
+    padding: 8px;
+}
+
+
+th {
+    text-align: left;
+}
