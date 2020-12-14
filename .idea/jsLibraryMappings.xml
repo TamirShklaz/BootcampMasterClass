@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="JavaScriptLibraryMappings">
-    <file url="PROJECT" libraries="{chart.js, chartjs-chart-box-and-violin-plot, chartjs-plugin-annotation, cuid, d3-flextree, d3.v6, jquery-3.5.1.slim, lodash, numeral}" />
+    <file url="PROJECT" libraries="{chart.js, chartjs-chart-box-and-violin-plot, chartjs-plugin-annotation, cuid, d3-flextree, d3.v6, jquery-3.5.1.slim, lodash, mathjs, numeral}" />
     <includedPredefinedLibrary name="HTTP Response Handler" />
   </component>
 </project>

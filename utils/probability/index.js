@@ -411,3 +411,30 @@ function drawTree(treeData) {
 
 }
 
+function findProbability(event1, event2, event3, winningOutcomes) {
+	let successfulOutcomes = 0
+	let totalOutcomes = event1.length * event2.length * event3.length
+
+	for (let o1 of event1) {
+
+		for (let o2 of event2) {
+
+
+			for (let o3 of event3) {
+
+				if (winningOutcomes.includes(o1)) {
+					successfulOutcomes++;
+				} else if (winningOutcomes.includes(o1 + o2)) {
+					successfulOutcomes++;
+				} else if (winningOutcomes.includes(o1 + o2 + o3)) {
+					successfulOutcomes++;
+				}
+
+
+			}
+
+		}
+	}
+
+	return successfulOutcomes / totalOutcomes
+}

@@ -37,7 +37,9 @@ function addHist(type, bins, title) {
 	return chart
 }
 
-function addBoxPlot(label, data, title) {
+function addBoxPlot(data, title) {
+	const id = Math.random() * 1000 + 1 + ""
+
 	addCanvas(title, id)
 	const chartCtx = document.getElementById(id).getContext('2d')
 
@@ -47,7 +49,7 @@ function addBoxPlot(label, data, title) {
 			labels: ["Box Plot"],
 			datasets: [
 				{
-					label,
+					label: title,
 					backgroundColor: "rgb(164,189,245)",
 					borderColor: 'red',
 					borderWidth: 1,
@@ -73,15 +75,16 @@ function addBoxPlot(label, data, title) {
 	})
 }
 
-function addPieChart(type, label, bins, title, id) {
+function addPieChart(type, bins, title) {
+	const id = Math.random() * 1000 + 1 + ""
 	addCanvas(title, id)
 	const chartCtx = document.getElementById(id).getContext('2d')
 	let pie = new Chart(chartCtx, {
 		type,
 		data: {
-			labels: bins.map(bin => `${numeral(bin.min).format('($ 0.00 a)')}-${numeral(bin.max).format('($ 0.00 a)')}`),
+			labels: bins.map(d => `${d.min}-${d.max}`),
 			datasets: [{
-				label,
+				label: title,
 				data: bins.map(b => b.count),
 				backgroundColor: Array(bins.length).fill().map(val => `rgba(${getRandomColor()}, ${getRandomColor()}, ${getRandomColor()}, 0.4)`)
 			}]
@@ -125,7 +128,7 @@ function round(num) {
 	return Math.round(num * 100) / 100
 }
 
-function binData(inputData, numBuckets) {
+function binData(inputData, numBuckets, format) {
 	let min = Math.min(...inputData)
 	let max = Math.max(...inputData)
 	let diff = (max - min) / numBuckets;
@@ -133,8 +136,12 @@ function binData(inputData, numBuckets) {
 	for (let i = min; i < max; i += diff) {
 		let min = round(i);
 		let max = round(i + diff)
+		let id = `${min}-${max}`
+		if (format === "CURRENCY") {
+			id = numeral(min).format('($ 0.00 a)') + "-" + numeral(max).format('($ 0.00 a)')
+		}
 		bins.push({
-			id: `${min}-${max}`,
+			id,
 			min,
 			max,
 			count: 0
@@ -177,16 +184,32 @@ function binData2(inputData, start, end, numBuckets) {
 	return bins;
 }
 
-function plotLine(label, data) {
-	chart.data.datasets.push({
-		label,
-		data: data.map((val, index) => {
-			return {x: index, y: val, extra: "hi"}
-		}),
-		backgroundColor: 'rgba(200,0,0,0.9)',
-		borderColor: 'rgba(200,0,0,0.9)'
+function plotLine(title, data) {
+	const id = Math.random() * 1000 + 1 + ""
+	addCanvas(title, id)
+	const chartCtx = document.getElementById(id).getContext('2d')
+	let chart = new Chart(chartCtx, {
+		type: 'line',
+		data: {
+			datasets: [{
+				label: title,
+				data: data.map(d => {
+					return {x: d.x, y: d.y}
+				}),
+				backgroundColor: 'rgba(190,169,169,0.9)',
+				borderColor: 'rgba(200,0,0,0.9)'
+			}]
+		},
+		options: {
+			scales: {
+				xAxes: [{
+					type: 'linear',
+					position: 'bottom'
+				}]
+			}
+		}
 	})
-	chart.update()
+
 }
 
 function getRandomColor() {
@@ -226,7 +249,7 @@ function boxPlot(data) {
 	})
 }
 
-function median(data) {
+function getMedian(data) {
 	data.sort((a, b) => a - b)
 	let length = data.length;
 	let middleIndex = data.length / 2
@@ -239,14 +262,44 @@ function median(data) {
 	}
 }
 
-function q1(data) {
+function getQ1(data) {
 	let half = data.slice(0, data.length / 2)
-	return median(half)
+	return getMedian(half)
 }
 
-function q3(data) {
+function getQ3(data) {
 	let half = data.slice(data.length / 2, data.length)
-	return median(half)
+	return getMedian(half)
+}
+
+function IQR(data) {
+	let q1 = getQ1(data)
+	let q3 = getQ3(data)
+	return q3 - q1;
+}
+
+function getMode(data) {
+	let map = []
+	for (let point of data) {
+		let mapVal = _.find(map, {id: point})
+		if (mapVal) {
+			mapVal.count++;
+		} else {
+			map.push({
+				id: point,
+				count: 1
+			})
+		}
+	}
+	map.sort((a, b) => b.count - a.count)
+	return map[0].id
+}
+
+function isOutlier(data, point) {
+	let q1 = getQ1(data)
+	let q3 = getQ3(data)
+	let iqr = IQR(data)
+	return point > q3 + 1.5 * iqr || point < q1 - 1.5 * iqr
 }
 
 function average(data) {
@@ -261,8 +314,8 @@ function average(data) {
 function mad(data) {
 	let avg = average(data)
 	let sum = 0;
-	for (let index in data) {
-		sum += Math.abs(data[index] - avg)
+	for (let val of data) {
+		sum += Math.abs(val - avg)
 	}
 	return sum / data.length
 }
@@ -299,6 +352,14 @@ function addVerticalLine(y, label, bins, chart) {
 function randomValues(count, min, max) {
 	const delta = max - min;
 	return Array.from({length: count}).map(() => Math.random() * delta + min);
+}
+
+function sort(data, direction) {
+	if (direction === "ASC") {
+		data.sort((d1, d2) => d1 - d2)
+	} else {
+		data.sort((d1, d2) => d2 - d1)
+	}
 }
 
 
