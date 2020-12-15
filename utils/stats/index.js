@@ -30,7 +30,8 @@ function addHist(type, bins, title) {
 			annotation: {
 				drawTime: "afterDatasetsDraw",
 				annotations: []
-			}
+			},
+
 		},
 
 	})

@@ -438,3 +438,49 @@ function findProbability(event1, event2, event3, winningOutcomes) {
 
 	return successfulOutcomes / totalOutcomes
 }
+
+function addProbabilityHist(type, title, labels, data) {
+	const id = Math.random() * 1000 + 1 + ""
+	addCanvas(title, id)
+	const chartCtx = document.getElementById(id).getContext('2d')
+	let chart = new Chart(chartCtx, {
+		type,
+		data: {
+			labels,
+			datasets: [{
+				label: title,
+				data,
+				borderWidth: 1,
+				backgroundColor: Array(data.length).fill().map(val => `rgba(${getRandomColor()}, ${getRandomColor()}, ${getRandomColor()}, 0.4)`)
+			}]
+		},
+		options: {
+			annotation: {
+				drawTime: "afterDatasetsDraw",
+				annotations: []
+			},
+			scales: {
+				yAxes: [{
+					ticks: {
+						beginAtZero: true
+					}
+				}]
+			}
+		},
+
+	})
+	return chart
+}
+
+function incrementBar(hist, index) {
+	hist.data.datasets[0].data[index]++;
+	hist.update()
+}
+
+function sleep(ms) {
+	return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function getRandomInt(min, max) {
+	return Math.floor(Math.random() * 6) + 1
+}
