@@ -18,5 +18,6 @@
     <orderEntry type="library" name="lodash" level="application" />
     <orderEntry type="library" name="numeral" level="application" />
     <orderEntry type="library" name="mathjs" level="application" />
+    <orderEntry type="library" name="p5.js" level="application" />
   </component>
 </module>
